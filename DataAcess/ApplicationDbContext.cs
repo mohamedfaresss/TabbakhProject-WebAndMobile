@@ -30,19 +30,19 @@ namespace DataAcess
         {
             base.OnModelCreating(builder);
             builder.Entity<FavoriteRecipe>()
-    .HasKey(fr => new { fr.UserId, fr.RecipeId }); 
+    .HasKey(fr => new { fr.UserId, fr.RecipeId });
 
             builder.Entity<FavoriteRecipe>()
                 .HasOne(fr => fr.User)
                 .WithMany(u => u.FavoriteRecipes)
                 .HasForeignKey(fr => fr.UserId)
-                .OnDelete(DeleteBehavior.Cascade); 
+                .OnDelete(DeleteBehavior.Cascade);
 
             builder.Entity<FavoriteRecipe>()
                 .HasOne(fr => fr.Recipe)
                 .WithMany(r => r.FavoritedBy)
                 .HasForeignKey(fr => fr.RecipeId)
-                .OnDelete(DeleteBehavior.Cascade); 
+                .OnDelete(DeleteBehavior.Cascade);
 
             // Apply separate configuration classes
             builder.ApplyConfiguration(new ApplicationUserConfiguration());

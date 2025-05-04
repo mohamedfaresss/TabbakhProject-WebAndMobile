@@ -10,7 +10,7 @@ using System.Threading.Tasks;
 
 namespace Models.DTOs.Mapper
 {
-    public class RecipeProfile:Profile
+    public class RecipeProfile : Profile
     {
         public RecipeProfile()
         {

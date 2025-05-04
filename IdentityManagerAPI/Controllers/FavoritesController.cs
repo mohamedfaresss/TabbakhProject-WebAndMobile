@@ -64,6 +64,9 @@ public class FavoritesController : ControllerBase
             .AsNoTracking()
             .ToListAsync();
 
+        if (!favorites.Any())
+            return NotFound("You don't have any favorite recipes yet.");
+
         // Get all recipe IDs that are in cart for this user
         var cartRecipeIds = await _context.CartItems
             .Where(c => c.UserId == user.Id)
@@ -82,6 +85,7 @@ public class FavoritesController : ControllerBase
         return Ok(dtos);
     }
 
+
     [HttpDelete("{recipeId}")]
     public async Task<IActionResult> RemoveFromFavorites(int recipeId)
     {
@@ -97,4 +101,22 @@ public class FavoritesController : ControllerBase
         await _context.SaveChangesAsync();
         return Ok();
     }
+    [HttpDelete]
+    public async Task<IActionResult> RemoveAllFavorites()
+    {
+        var user = await _userManager.GetUserAsync(User);
+        if (user == null) return Unauthorized();
+
+        var favorites = await _context.FavoriteRecipes
+            .Where(f => f.UserId == user.Id)
+            .ToListAsync();
+
+        if (!favorites.Any()) return NotFound("No favorites found.");
+
+        _context.FavoriteRecipes.RemoveRange(favorites);
+        await _context.SaveChangesAsync();
+
+        return Ok(new { message = "All favorite recipes have been removed." });
+    }
+
 }

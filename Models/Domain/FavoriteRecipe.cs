@@ -13,7 +13,7 @@ namespace Models.Domain
         public DateTime AddedAt { get; set; } = DateTime.UtcNow;
 
         // Navigation Properties
-        public int? ImageId { get; set; }  
+        public int? ImageId { get; set; }
         public ApplicationUser User { get; set; }
         public Recipe Recipe { get; set; }
     }
