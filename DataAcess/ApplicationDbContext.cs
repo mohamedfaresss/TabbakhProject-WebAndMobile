@@ -15,6 +15,8 @@ namespace DataAcess
         }
         public DbSet<ApplicationUser> ApplicationUser { get; set; }
         public DbSet<FavoriteRecipe> FavoriteRecipes { get; set; }
+        public DbSet<UserAllergy> UserAllergies { get; set; }
+        public DbSet<UserDisease> UserDiseases { get; set; }
         public DbSet<Image> Image { get; set; }
         public DbSet<Recipe> Recipe { get; set; }
         public DbSet<Nutrition> Nutrition { get; set; }

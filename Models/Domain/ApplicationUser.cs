@@ -1,7 +1,7 @@
 ﻿using Microsoft.AspNetCore.Identity;
+using Models.Domain;
 using System.ComponentModel.DataAnnotations.Schema;
 using System.ComponentModel.DataAnnotations;
-using Models.Domain;
 
 public class ApplicationUser : IdentityUser
 {
@@ -11,6 +11,12 @@ public class ApplicationUser : IdentityUser
     public int? ImageId { get; set; }
 
     [ForeignKey("ImageId")]
+    public Image? Image { get; set; }
+
+    public string? Bio { get; set; }
 
     public ICollection<FavoriteRecipe> FavoriteRecipes { get; set; }
+
+    public ICollection<UserAllergy> Allergies { get; set; }
+    public ICollection<UserDisease> Diseases { get; set; }
 }
