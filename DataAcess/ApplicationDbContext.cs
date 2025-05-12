@@ -4,7 +4,7 @@ using Microsoft.EntityFrameworkCore;
 using Models.Domain;
 using Models.DTOs.Food;
 
-namespace DataAcess
+namespace DataAcess.DbContexts
 {
     public class ApplicationDbContext : IdentityDbContext
     {

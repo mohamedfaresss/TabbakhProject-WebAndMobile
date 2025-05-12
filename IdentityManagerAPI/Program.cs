@@ -1,6 +1,5 @@
 ﻿using DataAcess.Repos.IRepos;
 using DataAcess.Repos;
-using DataAcess;
 using IdentityManager.Services.ControllerService.IControllerService;
 using IdentityManager.Services.ControllerService;
 using IdentityManagerAPI.Middlewares;
@@ -14,6 +13,7 @@ using Models.Domain;
 using Models.DTOs.Mapper;
 using Scalar.AspNetCore;
 using System.Text;
+using DataAcess.DbContexts;
 
 var builder = WebApplication.CreateBuilder(args);
 
@@ -24,6 +24,9 @@ builder.Services.AddHttpContextAccessor();
 // Add database context
 builder.Services.AddDbContext<ApplicationDbContext>(options =>
     options.UseSqlServer(builder.Configuration.GetConnectionString("DefaultConnection")));
+
+//builder.Services.AddDbContext<ArabicDbContext>(options =>
+//    options.UseSqlServer(builder.Configuration.GetConnectionString("ArabicConnection")));
 
 // Configure Identity
 builder.Services.AddIdentity<ApplicationUser, IdentityRole>()
@@ -96,15 +99,19 @@ builder.Services.AddCors(options =>
 
 // Configure JWT Authentication
 var key = Encoding.ASCII.GetBytes(builder.Configuration["ApiSettings:Secret"]);
+
 builder.Services.AddAuthentication(options =>
 {
     options.DefaultAuthenticateScheme = JwtBearerDefaults.AuthenticationScheme;
     options.DefaultChallengeScheme = JwtBearerDefaults.AuthenticationScheme;
 })
+
 .AddJwtBearer(options =>
 {
+    options.SaveToken = true;
     options.TokenValidationParameters = new TokenValidationParameters
     {
+
         ValidateIssuerSigningKey = true,
         IssuerSigningKey = new SymmetricSecurityKey(key),
         ValidateIssuer = false,

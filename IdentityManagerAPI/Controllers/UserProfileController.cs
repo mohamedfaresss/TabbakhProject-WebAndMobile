@@ -1,9 +1,9 @@
-﻿using DataAcess;
-using Microsoft.AspNetCore.Identity;
+﻿using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc;
 using Models.Domain;
 using Models.DTOs.User;
 using Microsoft.EntityFrameworkCore;
+using DataAcess.DbContexts;
 
 namespace Graduation_project_APIs.Controllers
 {

@@ -13,6 +13,7 @@ using System.Text;
 using System.Threading.Tasks;
 using AutoMapper;
 using Models.Domain;
+using DataAcess.DbContexts;
 
 namespace DataAcess.Repos
 {
