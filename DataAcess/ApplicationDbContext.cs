@@ -14,11 +14,7 @@ namespace DataAcess.DbContexts
             // this is pull 2 
         }
 
-        // Arabic tables
-        public DbSet<Models.ArabicDomain.الوصفات> الوصفات { get; set; }
-        public DbSet<Models.ArabicDomain.التغذية> التغذية { get; set; }
-        public DbSet<Models.ArabicDomain.المكونات> المكونات { get; set; }
-        public DbSet<Models.ArabicDomain.وصفة_المكونات> وصفة_المكونات { get; set; }
+       
 
         public DbSet<ApplicationUser> ApplicationUser { get; set; }
         public DbSet<FavoriteRecipe> FavoriteRecipes { get; set; }
@@ -35,27 +31,7 @@ namespace DataAcess.DbContexts
 
         protected override void OnModelCreating(ModelBuilder builder)
         {
-            builder.Entity<Models.ArabicDomain.وصفة_المكونات>()
-    .HasKey(x => new { x.بطاقة_الوصفة, x.بطاقة_المكون });
-
-            builder.Entity<Models.ArabicDomain.وصفة_المكونات>()
-                .HasOne(x => x.الوصفة)
-                .WithMany(r => r.وصفة_المكونات)
-                .HasForeignKey(x => x.بطاقة_الوصفة);
-
-            builder.Entity<Models.ArabicDomain.وصفة_المكونات>()
-                .HasOne(x => x.المكون)
-                .WithMany(i => i.وصفة_المكونات)
-                .HasForeignKey(x => x.بطاقة_المكون);
-
-            builder.Entity<Models.ArabicDomain.التغذية>()
-                .HasKey(x => x.بطاقة_الوصفة);
-
-            builder.Entity<Models.ArabicDomain.التغذية>()
-                .HasOne(x => x.الوصفة)
-                .WithOne(r => r.التغذية)
-                .HasForeignKey<Models.ArabicDomain.التغذية>(x => x.بطاقة_الوصفة);
-
+            
             base.OnModelCreating(builder);
             builder.Entity<FavoriteRecipe>()
     .HasKey(fr => new { fr.UserId, fr.RecipeId });

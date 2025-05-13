@@ -14,6 +14,7 @@ using Models.DTOs.Mapper;
 using Scalar.AspNetCore;
 using System.Text;
 using DataAcess.DbContexts;
+using Graduation_project_APIs;
 
 var builder = WebApplication.CreateBuilder(args);
 
@@ -25,8 +26,8 @@ builder.Services.AddHttpContextAccessor();
 builder.Services.AddDbContext<ApplicationDbContext>(options =>
     options.UseSqlServer(builder.Configuration.GetConnectionString("DefaultConnection")));
 
-//builder.Services.AddDbContext<ApplicationDbContext>(options =>
-//    options.UseSqlServer(builder.Configuration.GetConnectionString("ArabicConnection")));
+builder.Services.AddDbContext<ArabicDbContext>(options =>
+  options.UseSqlServer(builder.Configuration.GetConnectionString("ArabicConnection")));
 
 // Configure Identity
 builder.Services.AddIdentity<ApplicationUser, IdentityRole>()
@@ -83,6 +84,7 @@ builder.Services.AddSwaggerGen(c =>
             new List<string>()
         }
     });
+    c.OperationFilter<AddAcceptLanguageHeaderParameter>();
 });
 
 // Add CORS

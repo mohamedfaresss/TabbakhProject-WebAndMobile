@@ -1,15 +1,11 @@
-﻿using System.Collections.Generic;
-using System.ComponentModel.DataAnnotations;
-
-namespace Models.ArabicDomain
+﻿namespace Models.ArabicDomain
 {
     public class المكونات
     {
-        [Key]
-        public int بطاقة_المكون { get; set; }
+        public int بطاقة_تعريف { get; set; }
+        public string اسم_المكون { get; set; } = null!;
+        public bool النوع { get; set; }
 
-        public string? اسم_المكون { get; set; }
-
-        public ICollection<وصفة_المكونات> وصفة_المكونات { get; set; } = new List<وصفة_المكونات>();
+        public List<وصفة_المكونات> وصفة_المكونات { get; set; } = new();
     }
 }

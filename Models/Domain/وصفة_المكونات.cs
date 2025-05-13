@@ -1,18 +1,12 @@
-﻿using System.ComponentModel.DataAnnotations;
-
-namespace Models.ArabicDomain
+﻿namespace Models.ArabicDomain
 {
     public class وصفة_المكونات
     {
-        [Key]
-        public int بطاقة_الوصفة { get; set; }
+        public int بطاقة_تعريف_الوصفة { get; set; }
+        public int بطاقة_تعريف_المكون { get; set; }
+        public string كمية { get; set; } = null!;
 
-        public int بطاقة_المكون { get; set; }
-
-        public double? كمية { get; set; }
-
-        public المكونات? المكون { get; set; }
-
-        public الوصفات? الوصفة { get; set; }
+        public الوصفات الوصفة { get; set; } = null!;
+        public المكونات المكون { get; set; } = null!;
     }
 }
