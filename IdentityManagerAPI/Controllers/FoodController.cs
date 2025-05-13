@@ -163,7 +163,7 @@ public class FoodController : ControllerBase
         }
     }
 
-    [HttpGet("recipes/search/by-name/{name:alpha}")]
+    [HttpGet("recipes/search/by-name/{name:}")]
     public async Task<IActionResult> SearchRecipesByName(string name)
     {
         if (IsArabicRequest())
