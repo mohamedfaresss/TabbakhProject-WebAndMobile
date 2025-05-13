@@ -10,7 +10,7 @@ namespace DataAcess.DbContexts
     {
         public ApplicationDbContext(DbContextOptions<ApplicationDbContext> options) : base(options)
         {
-            // this is pull
+            // this is pull 1
             // this is pull 2 
             // this is pull 3
         }
