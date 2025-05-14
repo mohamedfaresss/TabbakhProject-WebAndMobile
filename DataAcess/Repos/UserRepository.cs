@@ -150,12 +150,11 @@ namespace DataAcess.Repos
 
             var token = await userManager.GeneratePasswordResetTokenAsync(user);
 
-            // هنا المفروض تبعت التوكن على الإيميل
             var resetLink = $"https://yourfrontend.com/reset-password?email={forgotPasswordRequestDTO.Email}&token={Uri.EscapeDataString(token)}";
 
             // TODO: Send 'resetLink' via email (SMTP or third-party service)
 
-            return "Password reset link has been generated and (should be) sent to email.";
+            return token;
         }
 
         public async Task<string> ResetPasswordAsync(ResetPasswordDTO resetPasswordDTO)
@@ -189,6 +188,11 @@ namespace DataAcess.Repos
 
             var result = await db.SaveChangesAsync();
             return result > 0;
+        }
+
+        public async Task<ApplicationUser> FindByEmailAsync(string email)
+        {
+            return await userManager.FindByEmailAsync(email);
         }
     }
 }

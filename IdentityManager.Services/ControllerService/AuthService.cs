@@ -1,48 +1,39 @@
 ﻿using DataAcess.Repos.IRepos;
 using IdentityManager.Services.ControllerService.IControllerService;
 using Models.DTOs.Auth;
-using System;
-using System.Collections.Generic;
 using System.ComponentModel.DataAnnotations;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 
-namespace IdentityManager.Services.ControllerService
+public class AuthService : IAuthService
 {
-    public class AuthService : IAuthService
+    private readonly IUserRepository _userRepository;
+
+    public AuthService(IUserRepository userRepository)
     {
-        private readonly IUserRepository _userRepository;
+        _userRepository = userRepository;
+    }
 
-        public AuthService(IUserRepository userRepository)
+    public async Task<object> LoginAsync(LoginRequestDTO loginRequestDTO)
+    {
+        return await _userRepository.Login(loginRequestDTO);
+    }
+
+    public async Task<string> ForgotPasswordAsync(ForgotPasswordRequestDTO forgotPasswordRequestDTO)
+    {
+        return await _userRepository.ForgotPasswordAsync(forgotPasswordRequestDTO);
+    }
+
+    public async Task<string> ResetPasswordAsync(ResetPasswordDTO resetPasswordDTO)
+    {
+        return await _userRepository.ResetPasswordAsync(resetPasswordDTO);
+    }
+
+    public async Task<object> RegisterAsync(RegisterRequestDTO registerRequestDTO)
+    {
+        var emailExist = await _userRepository.FindByEmailAsync(registerRequestDTO.Email);
+        if (emailExist != null)
         {
-            _userRepository = userRepository;
+            throw new ValidationException("Email Already exists");
         }
-
-        public async Task<object> LoginAsync(LoginRequestDTO loginRequestDTO)
-        {
-            return await _userRepository.Login(loginRequestDTO);
-        }
-        public async Task<string> ForgotPasswordAsync(ForgotPasswordRequestDTO forgotPasswordRequestDTO)
-        {
-            return await _userRepository.ForgotPasswordAsync(forgotPasswordRequestDTO);
-        }
-
-        public async Task<string> ResetPasswordAsync(ResetPasswordDTO resetPasswordDTO)
-        {
-            return await _userRepository.ResetPasswordAsync(resetPasswordDTO);
-        }
-
-
-        public async Task<object> RegisterAsync(RegisterRequestDTO registerRequestDTO)
-        {
-            var emailExist = await _userRepository.GetAsync(user => user.Email == registerRequestDTO.Email);
-            if (emailExist != null)
-            {
-                throw new ValidationException("Email Already exists");
-            }
-
-            return await _userRepository.Register(registerRequestDTO);
-        }
+        return await _userRepository.Register(registerRequestDTO);
     }
 }

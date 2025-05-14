@@ -15,6 +15,7 @@ using Scalar.AspNetCore;
 using System.Text;
 using DataAcess.DbContexts;
 using Graduation_project_APIs;
+using DataAcess.Services;
 
 var builder = WebApplication.CreateBuilder(args);
 
@@ -50,6 +51,7 @@ builder.Services.AddScoped<IUserService, UserService>();
 // Add Repositories
 builder.Services.AddScoped<IUserRepository, UserRepository>();
 builder.Services.AddScoped<IImageRepository, ImageRepository>();
+
 
 // Add Swagger
 builder.Services.AddEndpointsApiExplorer();

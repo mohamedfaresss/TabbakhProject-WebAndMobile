@@ -1,24 +1,17 @@
-﻿using Models.Domain;
-using Models.DTOs.Auth;
+﻿using Models.DTOs.Auth;
 using Models.DTOs.User;
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 
 namespace DataAcess.Repos.IRepos
 {
-    public interface IUserRepository : IRepository<ApplicationUser>
+    public interface IUserRepository
     {
+        Task<ApplicationUser> GetUserByID(string userID);
         Task<bool> IsUniqueUserName(string username);
         Task<LoginResponseDTO> Login(LoginRequestDTO loginRequestDTO);
         Task<UserDTO> Register(RegisterRequestDTO registerRequestDTO);
-        Task<ApplicationUser> GetUserByID(string userID);
-        Task<bool> UpdateAsync(ApplicationUser user);
         Task<string> ForgotPasswordAsync(ForgotPasswordRequestDTO forgotPasswordRequestDTO);
         Task<string> ResetPasswordAsync(ResetPasswordDTO resetPasswordDTO);
-
-
+        Task<bool> UpdateAsync(ApplicationUser user);
+        Task<ApplicationUser> FindByEmailAsync(string email);
     }
 }

@@ -1,7 +1,7 @@
 ﻿using DataAcess.Configuration;
 using Microsoft.EntityFrameworkCore;
 using Models.ArabicDomain;
-using Models.DTOs.Food.Arabic; // تحديث مساحة الاسم لتشمل Arabic
+using Models.DTOs.Food.Arabic; 
 
 namespace DataAcess.DbContexts
 {
