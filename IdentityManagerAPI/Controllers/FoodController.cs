@@ -69,8 +69,8 @@ public class FoodController : ControllerBase
 
             foreach (var recipe in result)
             {
-                recipe.مفضل = favIds.Contains(recipe.بطاقة_تعريف);
-                recipe.في_السلة = cartIds.Contains(recipe.بطاقة_تعريف);
+                recipe.IsFavorite = favIds.Contains(recipe.RecipeId);
+                recipe.IsInCart = cartIds.Contains(recipe.RecipeId);
             }
 
             return Ok(result);
@@ -118,9 +118,10 @@ public class FoodController : ControllerBase
 
             foreach (var recipe in result)
             {
-                recipe.مفضل = favIds.Contains(recipe.بطاقة_تعريف);
-                recipe.في_السلة = cartIds.Contains(recipe.بطاقة_تعريف);
+                recipe.IsFavorite = favIds.Contains(recipe.RecipeId);
+                recipe.IsInCart = cartIds.Contains(recipe.RecipeId);
             }
+
 
             return Ok(result);
         }
@@ -180,12 +181,12 @@ public class FoodController : ControllerBase
             var result = _mapper.Map<List<وصفة_مع_تغذية_DTO>>(recipes);
 
             var (favIds, cartIds) = await GetUserFavoritesAndCartAsync();
-
             foreach (var recipe in result)
             {
-                recipe.مفضل = favIds.Contains(recipe.بطاقة_تعريف);
-                recipe.في_السلة = cartIds.Contains(recipe.بطاقة_تعريف);
+                recipe.IsFavorite = favIds.Contains(recipe.RecipeId);
+                recipe.IsInCart = cartIds.Contains(recipe.RecipeId);
             }
+
 
             return Ok(result);
         }
@@ -236,8 +237,8 @@ public class FoodController : ControllerBase
 
             foreach (var recipe in result)
             {
-                recipe.مفضل = favIds.Contains(recipe.بطاقة_تعريف);
-                recipe.في_السلة = cartIds.Contains(recipe.بطاقة_تعريف);
+                recipe.IsFavorite = favIds.Contains(recipe.RecipeId);
+                recipe.IsInCart = cartIds.Contains(recipe.RecipeId);
             }
 
             return Ok(result);

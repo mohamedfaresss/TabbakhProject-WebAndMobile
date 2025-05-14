@@ -1,10 +1,10 @@
-﻿// MappingConfig.cs
-using AutoMapper;
+﻿using AutoMapper;
 using Models.Domain;
 using Models.ArabicDomain;
 using Models.DTOs.Food;
 using Models.DTOs.Food.Arabic;
 using Models.DTOs.User;
+using System.Linq;
 
 namespace Models.DTOs.Mapper
 {
@@ -14,6 +14,7 @@ namespace Models.DTOs.Mapper
         {
             CreateMap<ApplicationUser, UserDTO>().ReverseMap();
 
+            // تعيينات اللغة الإنجليزية
             CreateMap<Recipe, RecipeWithNutritionDTO>()
                 .ForMember(dest => dest.RecipeId, opt => opt.MapFrom(src => src.Recipe_Id))
                 .ForMember(dest => dest.Recipe_Name, opt => opt.MapFrom(src => src.Recipe_Name))
@@ -30,28 +31,46 @@ namespace Models.DTOs.Mapper
                     .Select(ri => new IngredientAmountDTO
                     {
                         IngredientName = ri.Ingredient!.Ingredient_Name,
-                        Amount = ri.Amount
-                    }).ToList()));
+                        Amount = ri.Amount // افترضنا Amount هي double?
+                    }).ToList()))
+                .ForMember(dest => dest.IngredientNames, opt => opt.MapFrom(src => src.Recipe_Ingredient
+                    .Select(ri => ri.Ingredient!.Ingredient_Name).ToList()));
 
+            // تعيينات اللغة العربية
             CreateMap<الوصفات, وصفة_مع_تغذية_DTO>()
-                 .ForMember(dest => dest.بطاقة_تعريف, opt => opt.MapFrom(src => src.بطاقة_تعريف))
-                 .ForMember(dest => dest.اسم_الوصفة, opt => opt.MapFrom(src => src.اسم))
-                 .ForMember(dest => dest.الوصف, opt => opt.MapFrom(src => src.وصف))
-                 .ForMember(dest => dest.طريقة_التحضير, opt => opt.MapFrom(src => src.طريقة_التحضير))
-                 .ForMember(dest => dest.الوقت, opt => opt.MapFrom(src => src.الوقت))
-                 .ForMember(dest => dest.سعرات_حرارية_لكل100ج, opt => opt.MapFrom(src => src.التغذية.سعرات_حرارية_لكل100جم))
-                 .ForMember(dest => dest.دهون_لكل100ج, opt => opt.MapFrom(src => src.التغذية.دهون_لكل100جم))
-                 .ForMember(dest => dest.سكر_لكل100ج, opt => opt.MapFrom(src => src.التغذية.سكر_لكل100جم))
-                 .ForMember(dest => dest.بروتين_لكل100ج, opt => opt.MapFrom(src => src.التغذية.بروتين_لكل100جم))
-                 .ForMember(dest => dest.كربوهيدرات_لكل100, opt => opt.MapFrom(src => src.التغذية.كربوهيدرات_لكل100جم))
-                 .ForMember(dest => dest.النوع, opt => opt.MapFrom(src => src.التغذية.النوع))
-                 .ForMember(dest => dest.المكونات, opt => opt.MapFrom(src => src.وصفة_المكونات
-                     .Select(ri => new مكون_مع_الكمية_DTO
-                     {
-                         اسم_المكون = ri.المكون!.اسم_المكون,
-                         الكمية = ri.كمية
-                     }).ToList()));
+                .ForMember(dest => dest.RecipeId, opt => opt.MapFrom(src => src.بطاقة_تعريف))
+                .ForMember(dest => dest.Recipe_Name, opt => opt.MapFrom(src => src.اسم))
+                .ForMember(dest => dest.Description, opt => opt.MapFrom(src => src.وصف))
+                .ForMember(dest => dest.Preparation_Method, opt => opt.MapFrom(src => src.طريقة_التحضير))
+                .ForMember(dest => dest.Time, opt => opt.MapFrom(src => src.الوقت))
+                .ForMember(dest => dest.Calories_100g, opt => opt.MapFrom(src => src.التغذية.سعرات_حرارية_لكل100جم))
+                .ForMember(dest => dest.Fat_100g, opt => opt.MapFrom(src => src.التغذية.دهون_لكل100جم))
+                .ForMember(dest => dest.Sugar_100g, opt => opt.MapFrom(src => src.التغذية.سكر_لكل100جم))
+                .ForMember(dest => dest.Protein_100g, opt => opt.MapFrom(src => src.التغذية.بروتين_لكل100جم))
+                .ForMember(dest => dest.Carb_100, opt => opt.MapFrom(src => src.التغذية.كربوهيدرات_لكل100جم))
+                .ForMember(dest => dest.Type, opt => opt.MapFrom(src => src.التغذية.النوع))
+                .ForMember(dest => dest.Ingredients, opt => opt.MapFrom(src => src.وصفة_المكونات
+                    .Select(ri => new IngredientAmountDTO
+                    {
+                        IngredientName = ri.المكون!.اسم_المكون,
+                        Amount = ParseAmount(ri.كمية)
+                    }).ToList()))
+                .ForMember(dest => dest.IngredientNames, opt => opt.MapFrom(src => src.وصفة_المكونات
+                    .Select(ri => ri.المكون!.اسم_المكون).ToList()));
+
+        }
+
+        private static double? ParseAmount(string amount)
+        {
+            if (string.IsNullOrWhiteSpace(amount))
+                return null;
+
+            // استخرج الرقم من النص (مثل "100 غرام" أو "100")
+            var numberPart = amount.Split(' ')[0];
+            if (double.TryParse(numberPart, out var result))
+                return result;
+
+            return null;
         }
     }
 }
-      

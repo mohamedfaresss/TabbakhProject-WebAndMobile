@@ -2,7 +2,7 @@
 {
     public class مكون_مع_الكمية_DTO
     {
-        public string اسم_المكون { get; set; } = null!;
-        public string الكمية { get; set; } = null!;
+        public string IngredientName { get; set; } = null!;
+        public string? Amount { get; set; }
     }
 }
