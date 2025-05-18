@@ -82,7 +82,7 @@ public class FoodController : ControllerBase
                 .Include(r => r.وصفة_المكونات)
                     .ThenInclude(ri => ri.المكون)
                 .AsNoTracking()
-                .Take(3000)
+                .Take(200)
                 .ToListAsync();
 
             var result = await MapArabicRecipesWithImageUrl(recipes);
@@ -95,7 +95,7 @@ public class FoodController : ControllerBase
                 .Include(r => r.Recipe_Ingredient)
                     .ThenInclude(ri => ri.Ingredient)
                 .AsNoTracking()
-                .Take(3000)
+                .Take(200)
                 .ToListAsync();
 
             var result = _mapper.Map<List<RecipeWithNutritionDTO>>(recipes);
@@ -121,7 +121,7 @@ public class FoodController : ControllerBase
                 .Include(r => r.وصفة_المكونات)
                     .ThenInclude(ri => ri.المكون)
                 .AsNoTracking()
-                .Take(500)
+                .Take(200)
                 .ToListAsync();
 
             var result = await MapArabicRecipesWithImageUrl(recipes);
@@ -134,7 +134,7 @@ public class FoodController : ControllerBase
                 .Include(r => r.Recipe_Ingredient)
                     .ThenInclude(ri => ri.Ingredient)
                 .AsNoTracking()
-                .Take(500)
+                .Take(200)
                 .ToListAsync();
 
             var result = _mapper.Map<List<RecipeWithNutritionDTO>>(recipes);
@@ -161,7 +161,7 @@ public class FoodController : ControllerBase
                 .Include(r => r.وصفة_المكونات)
                     .ThenInclude(ri => ri.المكون)
                 .AsNoTracking()
-                .Take(50)
+                .Take(200)
                 .ToListAsync();
 
             var result = await MapArabicRecipesWithImageUrl(recipes);
@@ -175,7 +175,7 @@ public class FoodController : ControllerBase
                 .Include(r => r.Recipe_Ingredient)
                     .ThenInclude(ri => ri.Ingredient)
                 .AsNoTracking()
-                .Take(50)
+                .Take(200)
                 .ToListAsync();
 
             var result = _mapper.Map<List<RecipeWithNutritionDTO>>(recipes);
@@ -204,7 +204,7 @@ public class FoodController : ControllerBase
                 .Include(r => r.التغذية)
                 .Include(r => r.وصفة_المكونات)
                     .ThenInclude(ri => ri.المكون)
-                .Take(50)
+                .Take(200)
                 .ToListAsync();
 
             var result = await MapArabicRecipesWithImageUrl(recipes);
@@ -220,7 +220,7 @@ public class FoodController : ControllerBase
                 .Include(r => r.Nutrition)
                 .Include(r => r.Recipe_Ingredient)
                     .ThenInclude(ri => ri.Ingredient)
-                .Take(50)
+                .Take(200)
                 .ToListAsync();
 
             var result = _mapper.Map<List<RecipeWithNutritionDTO>>(recipes);

@@ -12,7 +12,7 @@ public class RecipeWithNutritionDTO
     public double Sugar_100g { get; set; }
     public double Protein_100g { get; set; }
     public double Carb_100 { get; set; }
-
+    public string? ImgaeUrl { get; set; }
     public List<IngredientAmountDTO> Ingredients { get; set; } = new();
     public string Type { get; set; }
     public DateTime AddedAt { get; set; }
