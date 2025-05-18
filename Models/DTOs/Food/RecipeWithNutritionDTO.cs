@@ -16,6 +16,7 @@ public class RecipeWithNutritionDTO
     public List<IngredientAmountDTO> Ingredients { get; set; } = new();
     public string Type { get; set; }
     public DateTime AddedAt { get; set; }
+    public string? ImageUrl { get; set; }
     public List<string> IngredientNames { get; set; }
 
     public bool IsFavorite { get; set; } = false;
