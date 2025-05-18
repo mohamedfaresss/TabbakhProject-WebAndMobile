@@ -41,3 +41,4 @@ public sealed class BearerSecuritySchemeTransformer : IOpenApiDocumentTransforme
         }
     }
 }
+// check pull request
