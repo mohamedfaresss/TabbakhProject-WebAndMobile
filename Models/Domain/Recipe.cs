@@ -12,4 +12,6 @@ public partial class Recipe
     public ICollection<Recipe_Ingredient> Recipe_Ingredient { get; set; }
 
     public ICollection<FavoriteRecipe> FavoritedBy { get; set; }
+
+    public string? ImageUrl { get; set; } 
 }

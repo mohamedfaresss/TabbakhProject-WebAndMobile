@@ -17,6 +17,7 @@ namespace Models.DTOs.Food.Arabic
         public double Protein_100g { get; set; }
         public double Carb_100 { get; set; }
         public string Type { get; set; } = null!;
+        public string? ImageUrl { get; set; }  
         public DateTime AddedAt { get; set; }
         public List<IngredientAmountDTO> Ingredients { get; set; } = new(); // استخدام IngredientAmountDTO
         public List<string> IngredientNames { get; set; } = new();

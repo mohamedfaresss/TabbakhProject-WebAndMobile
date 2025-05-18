@@ -27,11 +27,12 @@ namespace Models.DTOs.Mapper
                 .ForMember(dest => dest.Protein_100g, opt => opt.MapFrom(src => src.Nutrition.Protein_100g))
                 .ForMember(dest => dest.Carb_100, opt => opt.MapFrom(src => src.Nutrition.Carb_100))
                 .ForMember(dest => dest.Type, opt => opt.MapFrom(src => src.Nutrition.Type))
+                .ForMember(dest => dest.ImageUrl, opt => opt.MapFrom(src => src.ImageUrl))
                 .ForMember(dest => dest.Ingredients, opt => opt.MapFrom(src => src.Recipe_Ingredient
                     .Select(ri => new IngredientAmountDTO
                     {
                         IngredientName = ri.Ingredient!.Ingredient_Name,
-                        Amount = ri.Amount // افترضنا Amount هي double?
+                        Amount = ri.Amount 
                     }).ToList()))
                 .ForMember(dest => dest.IngredientNames, opt => opt.MapFrom(src => src.Recipe_Ingredient
                     .Select(ri => ri.Ingredient!.Ingredient_Name).ToList()));

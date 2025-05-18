@@ -7,6 +7,7 @@ using Models.Domain;
 using DataAcess.DbContexts;
 using Microsoft.AspNetCore.Identity;
 using System.Security.Claims;
+using Models.ArabicDomain;
 
 [ApiController]
 [Route("api/[controller]")]
@@ -50,6 +51,27 @@ public class FoodController : ControllerBase
         return (favIds, cartIds);
     }
 
+    private async Task<List<وصفة_مع_تغذية_DTO>> MapArabicRecipesWithImageUrl(List<الوصفات> recipes)
+    {
+        var dtos = _mapper.Map<List<وصفة_مع_تغذية_DTO>>(recipes);
+        var recipeIds = dtos.Select(dto => dto.RecipeId).ToList();
+        var imageUrls = await _db.Recipe
+            .Where(r => recipeIds.Contains(r.Recipe_Id))
+            .Select(r => new { r.Recipe_Id, r.ImageUrl })
+            .ToDictionaryAsync(r => r.Recipe_Id, r => r.ImageUrl);
+
+        var (favIds, cartIds) = await GetUserFavoritesAndCartAsync();
+
+        foreach (var dto in dtos)
+        {
+            dto.ImageUrl = imageUrls.GetValueOrDefault(dto.RecipeId);
+            dto.IsFavorite = favIds.Contains(dto.RecipeId);
+            dto.IsInCart = cartIds.Contains(dto.RecipeId);
+        }
+
+        return dtos;
+    }
+
     [HttpGet("recipes")]
     public async Task<IActionResult> GetAllRecipes()
     {
@@ -63,16 +85,7 @@ public class FoodController : ControllerBase
                 .Take(3000)
                 .ToListAsync();
 
-            var result = _mapper.Map<List<وصفة_مع_تغذية_DTO>>(recipes);
-
-            var (favIds, cartIds) = await GetUserFavoritesAndCartAsync();
-
-            foreach (var recipe in result)
-            {
-                recipe.IsFavorite = favIds.Contains(recipe.RecipeId);
-                recipe.IsInCart = cartIds.Contains(recipe.RecipeId);
-            }
-
+            var result = await MapArabicRecipesWithImageUrl(recipes);
             return Ok(result);
         }
         else
@@ -86,7 +99,6 @@ public class FoodController : ControllerBase
                 .ToListAsync();
 
             var result = _mapper.Map<List<RecipeWithNutritionDTO>>(recipes);
-
             var (favIds, cartIds) = await GetUserFavoritesAndCartAsync();
 
             foreach (var recipe in result)
@@ -112,17 +124,7 @@ public class FoodController : ControllerBase
                 .Take(500)
                 .ToListAsync();
 
-            var result = _mapper.Map<List<وصفة_مع_تغذية_DTO>>(recipes);
-
-            var (favIds, cartIds) = await GetUserFavoritesAndCartAsync();
-
-            foreach (var recipe in result)
-            {
-                recipe.IsFavorite = favIds.Contains(recipe.RecipeId);
-                recipe.IsInCart = cartIds.Contains(recipe.RecipeId);
-            }
-
-
+            var result = await MapArabicRecipesWithImageUrl(recipes);
             return Ok(result);
         }
         else
@@ -136,7 +138,6 @@ public class FoodController : ControllerBase
                 .ToListAsync();
 
             var result = _mapper.Map<List<RecipeWithNutritionDTO>>(recipes);
-
             var (favIds, cartIds) = await GetUserFavoritesAndCartAsync();
 
             foreach (var recipe in result)
@@ -149,22 +150,7 @@ public class FoodController : ControllerBase
         }
     }
 
-    [HttpGet("ingredients")]
-    public IActionResult GetAllIngredients()
-    {
-        if (IsArabicRequest())
-        {
-            var ingredients = _arabicDb.المكونات.AsNoTracking().ToList();
-            return Ok(ingredients);
-        }
-        else
-        {
-            var ingredients = _db.Ingredient.AsNoTracking().ToList();
-            return Ok(ingredients);
-        }
-    }
-
-    [HttpGet("recipes/search/by-name/{name:}")]
+    [HttpGet("recipes/search/by-name/{name}")]
     public async Task<IActionResult> SearchRecipesByName(string name)
     {
         if (IsArabicRequest())
@@ -178,16 +164,7 @@ public class FoodController : ControllerBase
                 .Take(50)
                 .ToListAsync();
 
-            var result = _mapper.Map<List<وصفة_مع_تغذية_DTO>>(recipes);
-
-            var (favIds, cartIds) = await GetUserFavoritesAndCartAsync();
-            foreach (var recipe in result)
-            {
-                recipe.IsFavorite = favIds.Contains(recipe.RecipeId);
-                recipe.IsInCart = cartIds.Contains(recipe.RecipeId);
-            }
-
-
+            var result = await MapArabicRecipesWithImageUrl(recipes);
             return Ok(result);
         }
         else
@@ -202,7 +179,6 @@ public class FoodController : ControllerBase
                 .ToListAsync();
 
             var result = _mapper.Map<List<RecipeWithNutritionDTO>>(recipes);
-
             var (favIds, cartIds) = await GetUserFavoritesAndCartAsync();
 
             foreach (var recipe in result)
@@ -231,16 +207,7 @@ public class FoodController : ControllerBase
                 .Take(50)
                 .ToListAsync();
 
-            var result = _mapper.Map<List<وصفة_مع_تغذية_DTO>>(recipes);
-
-            var (favIds, cartIds) = await GetUserFavoritesAndCartAsync();
-
-            foreach (var recipe in result)
-            {
-                recipe.IsFavorite = favIds.Contains(recipe.RecipeId);
-                recipe.IsInCart = cartIds.Contains(recipe.RecipeId);
-            }
-
+            var result = await MapArabicRecipesWithImageUrl(recipes);
             return Ok(result);
         }
         else
@@ -257,7 +224,6 @@ public class FoodController : ControllerBase
                 .ToListAsync();
 
             var result = _mapper.Map<List<RecipeWithNutritionDTO>>(recipes);
-
             var (favIds, cartIds) = await GetUserFavoritesAndCartAsync();
 
             foreach (var recipe in result)
@@ -270,7 +236,22 @@ public class FoodController : ControllerBase
         }
     }
 
-    [HttpGet("ingredients/search/by-name/{ingredientName:alpha}")]
+    [HttpGet("ingredients")]
+    public IActionResult GetAllIngredients()
+    {
+        if (IsArabicRequest())
+        {
+            var ingredients = _arabicDb.المكونات.AsNoTracking().ToList();
+            return Ok(ingredients);
+        }
+        else
+        {
+            var ingredients = _db.Ingredient.AsNoTracking().ToList();
+            return Ok(ingredients);
+        }
+    }
+
+    [HttpGet("ingredients/search/by-name/{ingredientName}")]
     public IActionResult SearchIngredientIdsByName(string ingredientName)
     {
         if (IsArabicRequest())
@@ -280,7 +261,6 @@ public class FoodController : ControllerBase
                 .Where(ing => EF.Functions.Like(ing.اسم_المكون.ToLower(), $"%{ingredientName.ToLower()}%"))
                 .Select(i => i.بطاقة_تعريف)
                 .ToList();
-
             return Ok(ids);
         }
         else
@@ -290,7 +270,6 @@ public class FoodController : ControllerBase
                 .Where(ing => EF.Functions.Like(ing.Ingredient_Name.ToLower(), $"%{ingredientName.ToLower()}%"))
                 .Select(i => i.Ingredient_Id)
                 .ToList();
-
             return Ok(ids);
         }
     }
