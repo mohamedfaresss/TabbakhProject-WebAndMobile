@@ -7,7 +7,7 @@ public partial class Recipe
     public int Time { get; set; }
     public string Description { get; set; } = null!;
     public string? Preparation_Method { get; set; }
-
+    public string? ImageUrl { get; set; }
     public Nutrition Nutrition { get; set; }
     public ICollection<Recipe_Ingredient> Recipe_Ingredient { get; set; }
 
