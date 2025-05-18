@@ -20,15 +20,21 @@ using DataAcess.Services;
 var builder = WebApplication.CreateBuilder(args);
 
 // Add services to the container.
-builder.Services.AddControllers();
+builder.Services.AddControllers()
+    .AddJsonOptions(options =>
+    {
+        options.JsonSerializerOptions.PropertyNamingPolicy = null; // توحيد الـ keys
+    });
+
 builder.Services.AddHttpContextAccessor();
+builder.Services.AddMemoryCache(); // إضافة IMemoryCache للـ proxy
 
 // Add database context
 builder.Services.AddDbContext<ApplicationDbContext>(options =>
     options.UseSqlServer(builder.Configuration.GetConnectionString("DefaultConnection")));
 
 builder.Services.AddDbContext<ArabicDbContext>(options =>
-  options.UseSqlServer(builder.Configuration.GetConnectionString("ArabicConnection")));
+    options.UseSqlServer(builder.Configuration.GetConnectionString("ArabicConnection")));
 
 // Configure Identity
 builder.Services.AddIdentity<ApplicationUser, IdentityRole>()
@@ -52,14 +58,42 @@ builder.Services.AddScoped<IUserService, UserService>();
 builder.Services.AddScoped<IUserRepository, UserRepository>();
 builder.Services.AddScoped<IImageRepository, ImageRepository>();
 
+// Add CORS
+builder.Services.AddCors(options =>
+{
+    options.AddPolicy("AllowAll", builder =>
+    {
+        builder.AllowAnyOrigin() // أو WithOrigins("http://127.0.0.1:5500", "https://yourfrontend.com")
+               .AllowAnyHeader()
+               .AllowAnyMethod();
+    });
+});
+
+// Configure JWT Authentication
+var key = Encoding.ASCII.GetBytes(builder.Configuration["ApiSettings:Secret"]);
+builder.Services.AddAuthentication(options =>
+{
+    options.DefaultAuthenticateScheme = JwtBearerDefaults.AuthenticationScheme;
+    options.DefaultChallengeScheme = JwtBearerDefaults.AuthenticationScheme;
+})
+.AddJwtBearer(options =>
+{
+    options.SaveToken = true;
+    options.TokenValidationParameters = new TokenValidationParameters
+    {
+        ValidateIssuerSigningKey = true,
+        IssuerSigningKey = new SymmetricSecurityKey(key),
+        ValidateIssuer = false,
+        ValidateAudience = false,
+        ClockSkew = TimeSpan.FromDays(7)
+    };
+});
 
 // Add Swagger
 builder.Services.AddEndpointsApiExplorer();
 builder.Services.AddSwaggerGen(c =>
 {
     c.SwaggerDoc("v1", new OpenApiInfo { Title = "Graduation project APIs ", Version = "v1" });
-
-    // JWT Bearer Support
     c.AddSecurityDefinition("Bearer", new OpenApiSecurityScheme
     {
         Description = "Enter 'Bearer' [space] and then your token",
@@ -68,7 +102,6 @@ builder.Services.AddSwaggerGen(c =>
         Type = SecuritySchemeType.ApiKey,
         Scheme = "Bearer"
     });
-
     c.AddSecurityRequirement(new OpenApiSecurityRequirement
     {
         {
@@ -87,41 +120,6 @@ builder.Services.AddSwaggerGen(c =>
         }
     });
     c.OperationFilter<AddAcceptLanguageHeaderParameter>();
-});
-
-// Add CORS
-builder.Services.AddCors(options =>
-{
-    options.AddPolicy("AllowLocalhost",
-        builder =>
-        {
-            builder.WithOrigins("http://127.0.0.1:5500")
-                   .AllowAnyHeader()
-                   .AllowAnyMethod();
-        });
-});
-
-// Configure JWT Authentication
-var key = Encoding.ASCII.GetBytes(builder.Configuration["ApiSettings:Secret"]);
-
-builder.Services.AddAuthentication(options =>
-{
-    options.DefaultAuthenticateScheme = JwtBearerDefaults.AuthenticationScheme;
-    options.DefaultChallengeScheme = JwtBearerDefaults.AuthenticationScheme;
-})
-
-.AddJwtBearer(options =>
-{
-    options.SaveToken = true;
-    options.TokenValidationParameters = new TokenValidationParameters
-    {
-
-        ValidateIssuerSigningKey = true,
-        IssuerSigningKey = new SymmetricSecurityKey(key),
-        ValidateIssuer = false,
-        ValidateAudience = false,
-        ClockSkew = TimeSpan.FromDays(7)
-    };
 });
 
 // Exception handling
@@ -148,7 +146,7 @@ app.UseExceptionHandler();
 app.UseHttpsRedirection();
 
 // Enable CORS
-app.UseCors("AllowLocalhost");
+app.UseCors("AllowAll");
 
 // Auth middlewares
 app.UseAuthentication();
